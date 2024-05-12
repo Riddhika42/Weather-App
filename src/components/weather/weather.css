@@ -1,0 +1,32 @@
+.weather-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 0;
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: #000000;
+  align-items: center;
+}
+
+.weather-details h3 {
+  font-size: 20px;
+  font-weight: 200;
+  justify-self: center;
+}
+.weather-details h1 {
+  font-size: 30px;
+  font-weight: 200;
+}
+
+.weather-details p {
+  font-size: 16px;
+  font-weight: 200;
+}
+.weather-details img {
+  width: 100px;
+}
