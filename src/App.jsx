@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import Header from "./components/header/Header";
+import Weather from "./components/weather/Weather";
+import Forecast from "./components/forecast/Forecast";
+import getFormattedWeatherData from "./services/weatherService";
+import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [query, setQuery] = useState({ q: "Bengaluru" });
+  const [units, setUnits] = useState("metric");
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      const message = query.q ? query.q : "current location.";
+
+      toast.info("Fetching weather for " + message);
+
+      await getFormattedWeatherData({ ...query, units })
+        .then((data) => {
+          toast.success(
+            `Successfully fetched weather for ${data.name}, ${data.country}.`
+          );
+
+          setWeather(data);
+        })
+        .catch((error) => {
+          toast.error(`Bad Luck !! No City exists`);
+        });
+    };
+
+    fetchWeather();
+  }, [query, units]);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ToastContainer />
+      <Header setQuery={setQuery} units={units} setUnits={setUnits} />
+
+      {weather && (
+        <div>
+          <Weather weather={weather} units={units} />
+          <Forecast
+            title="daily forecast"
+            items={weather.daily}
+            units={units}
+          />
+        </div>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
